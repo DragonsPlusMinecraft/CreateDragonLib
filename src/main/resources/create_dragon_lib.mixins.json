@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "priority": 1100,
+  "package": "plus.dragons.createdragonlib.foundation.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "refmap": "create_dragon_lib.refmap.json",
+  "mixins": [
+    "AdvancementBehaviourAccessor",
+    "AllFluidsMixin",
+    "CreateAdvancementConstructor",
+    "CreateAdvancementMixin",
+    "CreateItemGroupBaseMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

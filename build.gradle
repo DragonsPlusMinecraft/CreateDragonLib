@@ -20,8 +20,8 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
 version = mod_version
-group = 'com.example.examplemod' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "examplemod-${artifact_minecraft_version}"
+group = 'plus.dragons.createdragonlib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "create_dragon_lib-${artifact_minecraft_version}"
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -51,7 +51,7 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            arg '-mixin.config=examplemod.mixins.json'
+            arg '-mixin.config=create_dragon_lib.mixins.json'
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -69,7 +69,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                examplemod {
+                create_dragon_lib {
                     source sourceSets.main
                 }
             }
@@ -78,7 +78,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            arg '-mixin.config=examplemod.mixins.json'
+            arg '-mixin.config=create_dragon_lib.mixins.json'
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -88,7 +88,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                examplemod {
+                create_dragon_lib {
                     source sourceSets.main
                 }
             }
@@ -102,10 +102,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'create_dragon_lib', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                create_dragon_lib {
                     source sourceSets.main
                 }
             }
@@ -176,8 +176,8 @@ dependencies {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 mixin {
-    add sourceSets.main, 'examplemod.refmap.json'
-    config 'examplemod.mixins.json'
+    add sourceSets.main, 'create_dragon_lib.refmap.json'
+    config 'create_dragon_lib.mixins.json'
 
     debug.verbose = true
     debug.export = true
@@ -188,14 +188,14 @@ mixin {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "examplemod",
-                "Specification-Vendor"    : "examplemodsareus",
+                "Specification-Title"     : "create_dragon_lib",
+                "Specification-Vendor"    : "dragons.plus",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "examplemodsareus",
+                "Implementation-Vendor"   : "dragons.plus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                'MixinConfigs': 'examplemod.mixins.json'
+                'MixinConfigs': 'create_dragon_lib.mixins.json'
         ])
     }
 }
