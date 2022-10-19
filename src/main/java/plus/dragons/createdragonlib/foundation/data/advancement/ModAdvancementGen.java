@@ -52,7 +52,7 @@ public class ModAdvancementGen implements DataProvider {
 
     @Override
     public String getName() {
-        return "Create: Enchantment Industry Advancements";
+        return "Create Dragon Lib";
     }
 
 }

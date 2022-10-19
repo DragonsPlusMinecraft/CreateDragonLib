@@ -43,7 +43,7 @@ In constructor of entrance class of your mod:
 ### Advancement Creation
 ```java
 public class AllAdvancments {
-    public static final ModAdvancementFactory factory = ModAdvancementFactory.of(MOD_ID);
+    public static final ModAdvancementFactory factory = ModAdvancementFactory.create(MOD_ID);
     public static final ModAdvancement EXAMPLE_ADVANCEMENT = factory.builder("example_advancement")
             .title("Example Advancement")
             .description("Just an example advancement.")

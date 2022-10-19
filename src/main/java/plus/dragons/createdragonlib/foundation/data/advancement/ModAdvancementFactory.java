@@ -3,7 +3,7 @@ package plus.dragons.createdragonlib.foundation.data.advancement;
 public class ModAdvancementFactory {
     private final String namespace;
 
-    public static ModAdvancementFactory of(String namespace){
+    public static ModAdvancementFactory create(String namespace){
         return new ModAdvancementFactory(namespace);
     }
 
