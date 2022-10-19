@@ -34,18 +34,6 @@ public interface ModTag<T, P extends RegistrateTagsProvider<T>> {
         return enumName.replace('$', '/').toLowerCase(Locale.ROOT);
     }
     
-    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOrPickaxe() {
-        return b -> b.tag(BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.MINEABLE_WITH_PICKAXE);
-    }
-    
-    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOnly() {
-        return b -> b.tag(BlockTags.MINEABLE_WITH_AXE);
-    }
-    
-    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> pickaxeOnly() {
-        return b -> b.tag(BlockTags.MINEABLE_WITH_PICKAXE);
-    }
-    
     static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, ItemBuilder<BlockItem, BlockBuilder<T, P>>> tagBlockAndItem(String namespace, String... paths) {
         return block -> {
             ItemBuilder<BlockItem, BlockBuilder<T, P>> item = block.item();

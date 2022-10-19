@@ -15,7 +15,7 @@ public class GuiTexture implements ScreenElement {
     public final int width, height;
     public final int startX, startY;
 
-    GuiTexture(String namespace, String location, int startX, int startY, int width, int height) {
+    public GuiTexture(String namespace, String location, int startX, int startY, int width, int height) {
         this.location = new ResourceLocation(namespace, "textures/gui/" + location + ".png");
         this.width = width;
         this.height = height;
@@ -23,7 +23,7 @@ public class GuiTexture implements ScreenElement {
         this.startY = startY;
     }
 
-    GuiTexture(String namespace, String location, int width, int height) {
+    public GuiTexture(String namespace, String location, int width, int height) {
         this(namespace, location, 0, 0, width, height);
     }
     

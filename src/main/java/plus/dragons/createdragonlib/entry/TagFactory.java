@@ -1,12 +1,26 @@
 package plus.dragons.createdragonlib.entry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
+import net.minecraft.tags.BlockTags;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TagFactory {
+    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOrPickaxe() {
+        return b -> b.tag(BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.MINEABLE_WITH_PICKAXE);
+    }
+
+    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOnly() {
+        return b -> b.tag(BlockTags.MINEABLE_WITH_AXE);
+    }
+
+    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> pickaxeOnly() {
+        return b -> b.tag(BlockTags.MINEABLE_WITH_PICKAXE);
+    }
     private final CreateRegistrate registrate;
     private final List<ModTag.Block> blockTags;
     private final List<ModTag.Item> itemTags;
