@@ -16,14 +16,14 @@ dependencies {
 
 ## Language File Datagen & Merger
 
-All game elements, advancements and p support language file datagen.
+All game elements, advancements and ponders support language file datagen.
 
-> Lang datagen works properly only if:  
+> ### Lang datagen works properly only if:  
 > **Game Elements** must be registered with **Registrate**.  
-> **Advancements** must use **our ModAdvancementFactory** to build advancement.  
-> **Ponders** must use **Ponder-related-method of Create itself**.
+> **Advancements** must use **our ModAdvancementFactory** to build advancement. 
+> **Ponders** must use **Ponder-related-method of Create itself**. 
 
-Also we allows you to merge any existing lang file into lang datagen:
+And we allows you to merge any existing lang file into lang datagen:
 
 ### Example:
 
@@ -38,9 +38,9 @@ In constructor of entrance class of your mod:
         // Lang datagen for Game Elements is enabled and cannot be disabled.
         AutoLang autoLang = AutoLang.create(MOD_NAME,MOD_ID)
                 // Enable Lang datagen for Ponders
-                .enableForPonders()
+                .enableForPonders(AllPonderThings::register)
                 // Enable Lang datagen for Advancements
-                .enableForAdvancement()
+                .enableForAdvancement(AllAdvancements::register)
                 // Merge /lang 下任意位置的 interface.json into Lang datagen. Create uses this path for gui text.
                 .mergeCreateStyleInterfaceLang()
                 // Merge /lang 下任意位置的 tooltips.json into Lang datagen. Create uses this path for tooltips text.
@@ -49,10 +49,10 @@ In constructor of entrance class of your mod:
                 // This will Merge /lang 下任意位置的 tooltips.json into Lang datagen.
                 .merge("fool","JUST A EXAMPLE")
                 // enable custom Lang Partial
-                .enable("auto-fool","JUST A EXAMPLE",AnyProvider::provideJsonObject);
+                .enable("auto-fool","JUST A EXAMPLE",AnyProvider::provideJsonObject,AnyProvider::preTask);
 
 
-        modEventBus.addListener(autoLang::init);
+        modEventBus.addListener(EventPriority.LOWEST,autoLang::registerDatagen);
     }
 ```
 
@@ -62,7 +62,7 @@ In constructor of entrance class of your mod:
 
 ```java
 public class AllAdvancments {
-    public static final ModAdvancementFactory factory = ModAdvancementFactory.create(MOD_ID);
+    public static final ModAdvancementFactory FACTORY = ModAdvancementFactory.create(MOD_ID);
     public static final ModAdvancement EXAMPLE_ADVANCEMENT = factory.builder("example_advancement")
             .title("Example Advancement")
             .description("Just an example advancement.")
@@ -74,10 +74,14 @@ public class AllAdvancments {
             .build();
 
     public static void register(){}
+
+    public static void registerDataGen(GatherDataEvent event){
+        FACTORY.registerDatagen(event);
+    }
 }
 ```
 
-Then send `register` method into `FMLCommonSetupEvent#enqueueWork`.
+Then subscribe `FMLCommonSetupEvent` with `AllAdvancments#register` method, and subscribe `GatherDataEvent` with `AllAdvancments#registerDataGen` and Lowest Priority.
 
 ### Accumulative Trigger
 
@@ -91,12 +95,6 @@ Use `ModTriggerFactory`and `AccumulativeTrigger`.
 ### RegistrateHelper
 
 Create has fixed namespace/modid in some registration methods, we provide alternative versions of these methods.
-
-### TagFactory
-
-Tag Creation and Datagen.
-
-> You must load all tags first before you `registerDatagen`.
 
 ## Event
 

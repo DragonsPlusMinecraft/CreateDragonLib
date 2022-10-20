@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.gui;
+package plus.dragons.createdragonlib.gui;
 
 import com.google.common.collect.AbstractIterator;
 import com.mojang.blaze3d.systems.RenderSystem;

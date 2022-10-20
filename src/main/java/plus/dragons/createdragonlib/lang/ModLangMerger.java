@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.data.lang;
+package plus.dragons.createdragonlib.lang;
 
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingOutputStream;
@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 /*
 MIT License
@@ -70,7 +71,7 @@ public class ModLangMerger implements DataProvider {
 
 	private String modName;
 
-	private List<ModLangPartial> langPartials;
+	private List<Supplier<ModLangPartial>> langPartials;
 
 	public ModLangMerger(String modName,String namespace) {
 		this.mergedLangData = new ArrayList<>();
@@ -87,8 +88,8 @@ public class ModLangMerger implements DataProvider {
 		this.gen = gen;
 	}
 
-	public void addPartial(ModLangPartial modLangPartial){
-		langPartials.add(modLangPartial);
+	public void addPartial(Supplier<ModLangPartial> modLangPartialSupplier){
+		langPartials.add(modLangPartialSupplier);
 	}
 
 	private void populateLangIgnore() {
@@ -272,9 +273,12 @@ public class ModLangMerger implements DataProvider {
 	}
 
 	private void collectEntries() {
-		for (ModLangPartial modLangPartial : langPartials)
-			addAll(modLangPartial.getDisplay(), modLangPartial.provide()
-				.getAsJsonObject());
+		for (Supplier<ModLangPartial> supplier : langPartials){
+			var langPartial = supplier.get();
+			addAll(langPartial.getDisplay(), langPartial.provide()
+					.getAsJsonObject());
+		}
+
 	}
 
 	private void save(CachedOutput cache, List<Object> dataIn, int missingKeys, Path target, String message)

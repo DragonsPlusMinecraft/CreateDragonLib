@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.data.advancement;
+package plus.dragons.createdragonlib.advancement;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;

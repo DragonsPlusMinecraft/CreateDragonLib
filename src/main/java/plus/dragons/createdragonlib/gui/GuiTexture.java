@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.gui;
+package plus.dragons.createdragonlib.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

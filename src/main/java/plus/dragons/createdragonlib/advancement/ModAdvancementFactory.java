@@ -1,4 +1,7 @@
-package plus.dragons.createdragonlib.foundation.data.advancement;
+package plus.dragons.createdragonlib.advancement;
+
+import net.minecraft.data.DataGenerator;
+import net.minecraftforge.data.event.GatherDataEvent;
 
 public class ModAdvancementFactory {
     private final String namespace;
@@ -13,5 +16,10 @@ public class ModAdvancementFactory {
 
     public ModAdvancement.Builder builder(String id) {
         return new ModAdvancement.Builder(namespace,id);
+    }
+
+    public void registerDatagen(final GatherDataEvent event) {
+        DataGenerator datagen = event.getGenerator();
+        datagen.addProvider(true,new ModAdvancementGen(namespace,datagen));
     }
 }

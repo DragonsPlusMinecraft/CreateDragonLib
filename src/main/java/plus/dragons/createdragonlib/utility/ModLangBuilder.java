@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.utility;
+package plus.dragons.createdragonlib.utility;
 
 import com.simibubi.create.foundation.utility.LangBuilder;
 import joptsimple.internal.Strings;

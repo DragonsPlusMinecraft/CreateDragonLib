@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.mixin;
+package plus.dragons.createdragonlib.mixin;
 
 import com.simibubi.create.foundation.advancement.AdvancementBehaviour;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.mixin;
+package plus.dragons.createdragonlib.mixin;
 
 import com.simibubi.create.AllFluids;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,7 +13,7 @@ import plus.dragons.createdragonlib.api.event.FluidLavaInteractionRegisterEvent;
 public class AllFluidsMixin {
     
     @Inject(method = "getLavaInteraction", at = @At("HEAD"), cancellable = true)
-    private static void enchantmentIndustry$handleInkLavaInteraction(FluidState fluidState, CallbackInfoReturnable<BlockState> cir) {
+    private static void createDragonLib$handleInkLavaInteraction(FluidState fluidState, CallbackInfoReturnable<BlockState> cir) {
         for(var e: FluidLavaInteractionRegisterEvent.REACTIONS.entrySet())
             if(e.getKey().test(fluidState))
                 cir.setReturnValue(e.getValue());

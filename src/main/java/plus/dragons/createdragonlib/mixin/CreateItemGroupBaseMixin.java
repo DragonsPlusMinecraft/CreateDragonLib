@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.mixin;
+package plus.dragons.createdragonlib.mixin;
 
 import com.simibubi.create.foundation.item.CreateItemGroupBase;
 import net.minecraft.core.NonNullList;

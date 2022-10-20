@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import plus.dragons.createdragonlib.api.event.FluidLavaInteractionRegisterEvent;
-import plus.dragons.createdragonlib.foundation.data.advancement.ModTriggerFactory;
+import plus.dragons.createdragonlib.advancement.ModTriggerFactory;
 
 @Mod(DragonLib.MOD_ID)
 public class DragonLib {

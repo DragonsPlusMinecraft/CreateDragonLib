@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.data.advancement;
+package plus.dragons.createdragonlib.advancement;
 
 import com.simibubi.create.foundation.advancement.SimpleCreateTrigger;
 import net.minecraft.MethodsReturnNonnullByDefault;

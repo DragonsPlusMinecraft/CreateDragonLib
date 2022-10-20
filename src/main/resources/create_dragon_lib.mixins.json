@@ -1,7 +1,7 @@
 {
   "required": true,
   "priority": 1100,
-  "package": "plus.dragons.createdragonlib.foundation.mixin",
+  "package": "plus.dragons.createdragonlib.mixin",
   "compatibilityLevel": "JAVA_16",
   "refmap": "create_dragon_lib.refmap.json",
   "mixins": [

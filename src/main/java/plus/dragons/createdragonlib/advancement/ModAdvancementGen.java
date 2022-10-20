@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.data.advancement;
+package plus.dragons.createdragonlib.advancement;
 
 import com.google.common.collect.Sets;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -45,9 +45,12 @@ public class ModAdvancementGen implements DataProvider {
                 LOGGER.error("Couldn't save advancement {}", advancementPath, ioexception);
             }
         };
-        for (var advancement :ModAdvancement.ENTRIES_MAP.get(namespace)) {
-            advancement.save(consumer);
-        }
+        var advancements = ModAdvancement.ENTRIES_MAP.get(namespace);
+        if(advancements!=null)
+            for (var advancement :advancements) {
+                advancement.save(consumer);
+            }
+
     }
 
     @Override

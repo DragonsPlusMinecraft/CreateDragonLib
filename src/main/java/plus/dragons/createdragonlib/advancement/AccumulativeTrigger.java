@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.data.advancement;
+package plus.dragons.createdragonlib.advancement;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;

@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.foundation.data.advancement;
+package plus.dragons.createdragonlib.advancement;
 
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.advancement.CreateAdvancement;
@@ -15,12 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
-import plus.dragons.createdragonlib.foundation.mixin.CreateAdvancementConstructor;
+import plus.dragons.createdragonlib.mixin.CreateAdvancementConstructor;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ModAdvancement {
@@ -49,7 +46,7 @@ public class ModAdvancement {
             this.builder.addCriterion("builtin", builtinTrigger.instance());
         } else this.builtinTrigger = null;
         this.createAdvancement = CreateAdvancementConstructor.createInstance(id, $ -> $);
-        ((ModdedCreateAdvancement)createAdvancement).fromModAdvancement(this);
+        ((ModdedCreateAdvancement) createAdvancement).fromModAdvancement(this);
         this.titleKey = new StringJoiner(".").add("advancement").add(namespace).add(id).toString();
         this.descriptionKey = titleKey + ".desc";this.title = title;
         this.description = description;
@@ -115,7 +112,9 @@ public class ModAdvancement {
 
     public static JsonObject provideLangEntries(String namespace) {
         JsonObject object = new JsonObject();
-        for (var advancement : ENTRIES_MAP.get(namespace)) {
+        var advancements = ENTRIES_MAP.get(namespace);
+        if(advancements==null) return object;
+        for (var advancement : advancements) {
             advancement.appendToLang(object);
         }
         return object;
@@ -221,6 +220,7 @@ public class ModAdvancement {
                 announce,
                 hide
             );
+            if(!ENTRIES_MAP.containsKey(namespace)) ENTRIES_MAP.put(namespace,new ArrayList<>());
             ENTRIES_MAP.get(namespace).add(advancement);
             return advancement;
         }
