@@ -10,15 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TagFactory {
-    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOrPickaxe() {
+    public static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOrPickaxe() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 
-    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOnly() {
+    public static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> axeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_AXE);
     }
 
-    static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> pickaxeOnly() {
+    public static <T extends net.minecraft.world.level.block.Block, P> NonNullFunction<BlockBuilder<T, P>, BlockBuilder<T, P>> pickaxeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_PICKAXE);
     }
     private final CreateRegistrate registrate;
