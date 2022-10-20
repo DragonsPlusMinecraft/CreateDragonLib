@@ -1,7 +1,10 @@
 # Features
+
 ## Language File Datagen & Merger
+
 All game elements, advancements and p support language file datagen.
-> Lang datagen works properly only if:   
+
+> Lang datagen works properly only if:  
 > **Game Elements** must be registered with **Registrate**.  
 > **Advancements** must use **our ModAdvancementFactory** to build advancement.  
 > **Ponders** must use **Ponder-related-method of Create itself**.
@@ -9,7 +12,9 @@ All game elements, advancements and p support language file datagen.
 Also we allows you to merge any existing lang file into lang datagen:
 
 ### Example:
+
 In constructor of entrance class of your mod:
+
 ```java
     public ExampleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -31,16 +36,16 @@ In constructor of entrance class of your mod:
                 .merge("fool","JUST A EXAMPLE")
                 // enable custom Lang Partial
                 .enable("auto-fool","JUST A EXAMPLE",AnyProvider::provideJsonObject);
-                
+
 
         modEventBus.addListener(autoLang::init);
     }
 ```
 
-
-
 ## Create-ish Advancements & Accumulative Trigger
+
 ### Advancement Creation
+
 ```java
 public class AllAdvancments {
     public static final ModAdvancementFactory factory = ModAdvancementFactory.create(MOD_ID);
@@ -53,38 +58,58 @@ public class AllAdvancments {
             .frame(FrameType.CHALLENGE)
             .parent(OTHER_ADVANCEMENT)
             .build();
-    
+
     public static void register(){}
 }
 ```
+
 Then send `register` method into `FMLCommonSetupEvent#enqueueWork`.
 
 ### Accumulative Trigger
+
 Just like its name, it accumulates trigger time and when total triggered time reaches standard, related criterion is fulfilled.  
 Use `ModTriggerFactory`and `AccumulativeTrigger`.
 
 # Utilities & APIs
+
 ## Register
+
 ### RegistrateHelper
+
 Create has fixed namespace/modid in some registration methods, we provide alternative versions of these methods.
+
 ### TagFactory
+
 Tag Creation and Datagen.
->You must load all tags first before you `registerDatagen`.
+
+> You must load all tags first before you `registerDatagen`.
 
 ## Event
+
 ### FillCreateItemGroupEvent
+
 Provides the ability to insert items into Create's Creative Tab via this event.
+
 ### FluidLavaInteractionRegisterEvent
+
 Customize the reaction of other liquids when they encounter lava.
 
 ## GUI
+
 ### ComponentLabel
+
 An extension for Label which renders Component correctly.
+
 ### GuiTexture
+
 A simple ScreenElement render picture.
 
 ## Lang
+
 ### ModLangBuilder
+
 LangBuilder with your own namespace/modid, and 'forGoggles' method from LangBuilder.
+
 ### ModLang
+
 ModLangBuilder utility methods, still with your own namespace/modid.
