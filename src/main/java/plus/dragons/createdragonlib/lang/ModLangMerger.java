@@ -105,7 +105,7 @@ public class ModLangMerger implements DataProvider {
 
 	@Override
 	public String getName() {
-		return "Lang merger";
+		return "Create Dragon Lib Lang Merger";
 	}
 
 	@Override

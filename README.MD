@@ -41,12 +41,12 @@ In constructor of entrance class of your mod:
                 .enableForPonders(AllPonderThings::register)
                 // Enable Lang datagen for Advancements
                 .enableForAdvancement(AllAdvancements::register)
-                // Merge /lang 下任意位置的 interface.json into Lang datagen. Create uses this path for gui text.
+                // Merge /lang/default/interface.json into Lang datagen. Create uses this path for gui text.
                 .mergeCreateStyleInterfaceLang()
-                // Merge /lang 下任意位置的 tooltips.json into Lang datagen. Create uses this path for tooltips text.
+                // Merge /lang/default/tooltips.json into Lang datagen. Create uses this path for tooltips text.
                 .mergeCreateStyleTooltipLang()
                 // Merge any lang tile you want
-                // This will Merge /lang 下任意位置的 tooltips.json into Lang datagen.
+                // This will Merge /lang/default/fool.json into Lang datagen.
                 .merge("fool","JUST A EXAMPLE")
                 // enable custom Lang Partial
                 .enable("auto-fool","JUST A EXAMPLE",AnyProvider::provideJsonObject,AnyProvider::preTask);

@@ -38,7 +38,7 @@ public abstract class ModLangPartial {
 
         record Box(String namespace,String filename){
             private JsonElement fromResource() {
-                String filepath = "assets/" + namespace + "/lang/partial/" + filename + ".json";
+                String filepath = "assets/" + namespace + "/lang/default/" + filename + ".json";
                 JsonElement element = FilesHelper.loadJsonResource(filepath);
                 if (element == null)
                     throw new IllegalStateException(String.format("Could not find default lang file: %s", filepath));
