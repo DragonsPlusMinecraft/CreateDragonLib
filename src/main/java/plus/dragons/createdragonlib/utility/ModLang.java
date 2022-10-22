@@ -1,7 +1,10 @@
 package plus.dragons.createdragonlib.utility;
 
+import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.LangBuilder;
 import com.simibubi.create.foundation.utility.LangNumberFormat;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,6 +35,10 @@ public class ModLang {
     
     public static LangBuilder tooltip(String namespace, Item item, String suffix, Object... args) {
         return builder(namespace).translate(item.getDescriptionId() + ".tooltip." + suffix, args);
+    }
+
+    public static LangBuilder fromRL(String namespace, String category, ResourceLocation loc, Object... args) {
+        return builder(namespace).add(Components.translatable(Util.makeDescriptionId(category, loc), args));
     }
 
     public static LangBuilder number(String namespace,double d) {
