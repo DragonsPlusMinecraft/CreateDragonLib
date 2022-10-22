@@ -4,8 +4,6 @@ import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
 import plus.dragons.createdragonlib.advancement.AdvancementHolder;
 
 import java.util.Collections;
@@ -15,21 +13,23 @@ public class LangFactory {
     private final String modid;
     private final LangMerger langMerger;
 
-    public LangFactory(String name, String modid) {
+    private LangFactory(String name, String modid) {
         this.modid = modid;
         this.langMerger = new LangMerger(name, modid);
+    }
+    
+    public static LangFactory create(String name, String modid) {
+        return new LangFactory(name, modid);
     }
     
     /**
      * Register the {@link LangMerger} instance to {@link GatherDataEvent}. <br>
      * Should be called in the mod's main class' constructor. <br>
      */
-    public void register(IEventBus modEventBus) {
-        modEventBus.<GatherDataEvent>addListener(EventPriority.LOWEST, event -> {
-            DataGenerator datagen = event.getGenerator();
-            langMerger.dataGenerator = datagen;
-            datagen.addProvider(event.includeClient(), langMerger);
-        });
+    public void datagen(final GatherDataEvent event) {
+        DataGenerator datagen = event.getGenerator();
+        langMerger.dataGenerator = datagen;
+        datagen.addProvider(event.includeClient(), langMerger);
     }
     
     /**

@@ -2,7 +2,6 @@ package plus.dragons.createdragonlib.advancement;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import plus.dragons.createdragonlib.advancement.critereon.TriggerFactory;
 
 public class AdvancementFactory {
@@ -10,9 +9,13 @@ public class AdvancementFactory {
     private final AdvancementGen advancementGen;
     private final TriggerFactory triggerFactory = new TriggerFactory();
 
-    public AdvancementFactory(String name, String modid) {
+    private AdvancementFactory(String name, String modid) {
         this.modid = modid;
         this.advancementGen = new AdvancementGen(name, modid);
+    }
+    
+    public static AdvancementFactory create(String name, String modid) {
+        return new AdvancementFactory(name, modid);
     }
 
     public AdvancementHolder.Builder builder(String id) {
@@ -22,14 +25,15 @@ public class AdvancementFactory {
     public TriggerFactory getTriggerFactory() {
         return triggerFactory;
     }
+    
+    public void datagen(final GatherDataEvent event) {
+        DataGenerator datagen = event.getGenerator();
+        advancementGen.generator = datagen;
+        datagen.addProvider(event.includeServer(), advancementGen);
+    }
 
-    public void register(IEventBus modEventBus) {
+    public void register() {
         triggerFactory.register();
-        modEventBus.<GatherDataEvent>addListener(event -> {
-            DataGenerator datagen = event.getGenerator();
-            advancementGen.generator = datagen;
-            datagen.addProvider(event.includeServer(), advancementGen);
-        });
     }
     
 }
