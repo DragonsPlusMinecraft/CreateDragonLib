@@ -10,28 +10,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import plus.dragons.createdragonlib.advancement.ModAdvancement;
+import plus.dragons.createdragonlib.advancement.Advancement;
 import plus.dragons.createdragonlib.advancement.ModdedCreateAdvancement;
 
 @Mixin(value = CreateAdvancement.class, remap = false)
 @Implements(@Interface(iface = ModdedCreateAdvancement.class, prefix = "createDragonLib$", remap = Interface.Remap.NONE))
 public class CreateAdvancementMixin {
     
-    @Nullable private ModAdvancement createDragonLib$advancement = null;
+    @Nullable private Advancement createDragonLib$advancement = null;
     
-    public void createDragonLib$fromModAdvancement(ModAdvancement advancement) {
+    public void createDragonLib$fromModAdvancement(Advancement advancement) {
         this.createDragonLib$advancement = advancement;
     }
     
     @Inject(method = "isAlreadyAwardedTo", at = @At("HEAD"), cancellable = true)
-    private void enchantmentIndustryIsAlreadyAwardedTo(Player player, CallbackInfoReturnable<Boolean> cir) {
+    private void createDragonLibAlreadyAwardedTo(Player player, CallbackInfoReturnable<Boolean> cir) {
         if(createDragonLib$advancement != null) {
             cir.setReturnValue(createDragonLib$advancement.isAlreadyAwardedTo(player));
         }
     }
     
     @Inject(method = "awardTo", at = @At("HEAD"), cancellable = true)
-    private void enchantmentIndustryAwardTo(Player player, CallbackInfo ci) {
+    private void createDragonLibAwardTo(Player player, CallbackInfo ci) {
         if(createDragonLib$advancement != null) {
             createDragonLib$advancement.awardTo(player);
             ci.cancel();

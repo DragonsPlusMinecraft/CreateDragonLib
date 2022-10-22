@@ -4,12 +4,12 @@ import com.google.common.base.Supplier;
 import com.google.gson.JsonElement;
 import com.simibubi.create.foundation.utility.FilesHelper;
 
-public abstract class ModLangPartial {
+abstract class LangPartial {
     protected final String namespace;
     protected final String display;
     protected final Supplier<JsonElement> provider;
 
-    ModLangPartial(String namespace, String display, Supplier<JsonElement> provider) {
+    LangPartial(String namespace, String display, Supplier<JsonElement> provider) {
         this.namespace = namespace;
         this.display = display;
         this.provider = provider;
@@ -23,7 +23,7 @@ public abstract class ModLangPartial {
         return provider.get();
     }
 
-    public static class Merge extends ModLangPartial{
+    public static class Merge extends LangPartial {
         private final String filename;
 
         Merge(String namespace, String filename, String display) {
@@ -47,7 +47,7 @@ public abstract class ModLangPartial {
         }
     }
 
-    public static class Gen extends ModLangPartial{
+    public static class Gen extends LangPartial {
 
         private final Runnable preTask;
 

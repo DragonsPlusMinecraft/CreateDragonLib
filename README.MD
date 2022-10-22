@@ -20,7 +20,7 @@ All game elements, advancements and ponders support language file datagen.
 
 > ### Lang datagen works properly only if:  
 > **Game Elements** must be registered with **Registrate**.  
-> **Advancements** must use **our ModAdvancementFactory** to build advancement. 
+> **Advancements** must use **our AdvancementFactory** to build advancement. 
 > **Ponders** must use **Ponder-related-method of Create itself**. 
 
 And we allows you to merge any existing lang file into lang datagen:
@@ -62,8 +62,8 @@ In constructor of entrance class of your mod:
 
 ```java
 public class AllAdvancments {
-    public static final ModAdvancementFactory FACTORY = ModAdvancementFactory.create(MOD_ID);
-    public static final ModAdvancement EXAMPLE_ADVANCEMENT = factory.builder("example_advancement")
+    public static final AdvancementFactory FACTORY = new AdvancementFactory(MOD_ID);
+    public static final Advancement EXAMPLE_ADVANCEMENT = factory.create("example_advancement")
             .title("Example Advancement")
             .description("Just an example advancement.")
             .icon(AllItems.SOMETHING)
@@ -73,20 +73,24 @@ public class AllAdvancments {
             .parent(OTHER_ADVANCEMENT)
             .build();
 
-    public static void register(){}
+    public static class Triggers {
+        public static final AccumulativeTrigger EXAMPLE_ACCUMULATIVE = FACTORY.getTriggerFactory().addAccumulative(TRIGGER_ID);
+    }
+
+    public static void register() {
+        FACTORY.getTriggerFactory().register();
+    }
 
     public static void registerDataGen(GatherDataEvent event){
         FACTORY.registerDatagen(event);
     }
 }
 ```
-
 Then subscribe `FMLCommonSetupEvent` with `AllAdvancments#register` method, and subscribe `GatherDataEvent` with `AllAdvancments#registerDataGen` and Lowest Priority.
 
 ### Accumulative Trigger
-
 Just like its name, it accumulates trigger time and when total triggered time reaches standard, related criterion is fulfilled.  
-Use `ModTriggerFactory`and `AccumulativeTrigger`.
+Use `TriggerFactory`and `AccumulativeTrigger`.
 
 # Utilities & APIs
 

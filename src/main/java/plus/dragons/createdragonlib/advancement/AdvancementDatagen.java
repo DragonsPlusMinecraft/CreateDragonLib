@@ -2,7 +2,6 @@ package plus.dragons.createdragonlib.advancement;
 
 import com.google.common.collect.Sets;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -18,12 +17,12 @@ import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ModAdvancementGen implements DataProvider {
+class AdvancementDatagen implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private final String namespace;
     private final DataGenerator generator;
 
-    public ModAdvancementGen(String namespace, DataGenerator generator) {
+    public AdvancementDatagen(String namespace, DataGenerator generator) {
         this.namespace = namespace;
         this.generator = generator;
     }
@@ -32,7 +31,7 @@ public class ModAdvancementGen implements DataProvider {
     public void run(CachedOutput cache) {
         Path path = this.generator.getOutputFolder();
         Set<ResourceLocation> set = Sets.newHashSet();
-        Consumer<Advancement> consumer = advancement -> {
+        Consumer<net.minecraft.advancements.Advancement> consumer = advancement -> {
             if (!set.add(advancement.getId()))
                 throw new IllegalStateException("Duplicate advancement " + advancement.getId());
             Path advancementPath = path.resolve("data/"
@@ -45,7 +44,7 @@ public class ModAdvancementGen implements DataProvider {
                 LOGGER.error("Couldn't save advancement {}", advancementPath, ioexception);
             }
         };
-        var advancements = ModAdvancement.ENTRIES_MAP.get(namespace);
+        var advancements = Advancement.ENTRIES_MAP.get(namespace);
         if(advancements!=null)
             for (var advancement :advancements) {
                 advancement.save(consumer);

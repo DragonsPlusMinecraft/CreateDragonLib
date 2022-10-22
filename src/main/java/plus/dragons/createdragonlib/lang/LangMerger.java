@@ -51,7 +51,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-public class ModLangMerger implements DataProvider {
+class LangMerger implements DataProvider {
 	private Logger logger = LogManager.getLogger();
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting()
 		.disableHtmlEscaping()
@@ -71,9 +71,9 @@ public class ModLangMerger implements DataProvider {
 
 	private String modName;
 
-	private List<Supplier<ModLangPartial>> langPartials;
+	private List<Supplier<LangPartial>> langPartials;
 
-	public ModLangMerger(String modName,String namespace) {
+	public LangMerger(String modName, String namespace) {
 		this.mergedLangData = new ArrayList<>();
 		this.langIgnore = new ArrayList<>();
 		this.allLocalizedEntries = new HashMap<>();
@@ -88,7 +88,7 @@ public class ModLangMerger implements DataProvider {
 		this.gen = gen;
 	}
 
-	public void addPartial(Supplier<ModLangPartial> modLangPartialSupplier){
+	public void addPartial(Supplier<LangPartial> modLangPartialSupplier){
 		langPartials.add(modLangPartialSupplier);
 	}
 
@@ -273,7 +273,7 @@ public class ModLangMerger implements DataProvider {
 	}
 
 	private void collectEntries() {
-		for (Supplier<ModLangPartial> supplier : langPartials){
+		for (Supplier<LangPartial> supplier : langPartials){
 			var langPartial = supplier.get();
 			addAll(langPartial.getDisplay(), langPartial.provide()
 					.getAsJsonObject());
