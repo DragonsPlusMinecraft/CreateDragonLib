@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.advancement;
+package plus.dragons.createdragonlib.advancement.critereon;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class AccumulativeTrigger extends SimpleCriterionTrigger<AccumulativeTrigger.TriggerInstance>{
 
-    final ResourceLocation id;
+    private final ResourceLocation id;
 
     public AccumulativeTrigger(ResourceLocation pId) {
         this.id = pId;
@@ -32,11 +32,11 @@ public class AccumulativeTrigger extends SimpleCriterionTrigger<AccumulativeTrig
     @NotNull
     protected TriggerInstance createInstance(JsonObject pJson, @NotNull EntityPredicate.Composite pPlayer, @NotNull DeserializationContext pContext) {
         MinMaxBounds.Ints requirements = MinMaxBounds.Ints.fromJson(pJson.get("requirement"));
-        return new TriggerInstance(id,pPlayer,requirements);
+        return new TriggerInstance(id, pPlayer, requirements);
     }
 
     public void trigger(Player pPlayer, int change){
-        this.trigger((ServerPlayer) pPlayer, (triggerInstance) -> triggerInstance.matches(id,pPlayer,change));
+        this.trigger((ServerPlayer) pPlayer, (triggerInstance) -> triggerInstance.matches(id, pPlayer, change));
     }
 
     @Override
@@ -60,8 +60,8 @@ public class AccumulativeTrigger extends SimpleCriterionTrigger<AccumulativeTrig
         }
 
         public int get(ResourceLocation resourceLocation ,UUID playerId){
-            var ret = data.get(resourceLocation,playerId);
-            return ret==null?0:ret;
+            var ret = data.get(resourceLocation, playerId);
+            return ret == null ? 0 : ret;
         }
 
         public AccumulativeData() {
@@ -74,9 +74,9 @@ public class AccumulativeTrigger extends SimpleCriterionTrigger<AccumulativeTrig
         public static AccumulativeData load(CompoundTag compoundNBT){
             AccumulativeData ret = new AccumulativeData();
             if(compoundNBT.contains("accumulative_data")){
-                var rowMap = (Map<ResourceLocation,Map<UUID,Integer>>) ret.gson.fromJson(compoundNBT.getString("accumulative_data"),ret.type);
-                for(var rl:rowMap.keySet()){
-                    for(var entry:rowMap.get(rl).entrySet())
+                var rowMap = (Map<ResourceLocation, Map<UUID,Integer>>) ret.gson.fromJson(compoundNBT.getString("accumulative_data"), ret.type);
+                for (var rl : rowMap.keySet()){
+                    for (var entry : rowMap.get(rl).entrySet())
                         ret.data.put(rl,entry.getKey(),entry.getValue());
                 }
             }
@@ -85,19 +85,19 @@ public class AccumulativeTrigger extends SimpleCriterionTrigger<AccumulativeTrig
 
         @Override
         public CompoundTag save(CompoundTag pCompoundTag) {
-            pCompoundTag.putString("accumulative_data",gson.toJson(data.rowMap(),type));
+            pCompoundTag.putString("accumulative_data", gson.toJson(data.rowMap(), type));
             return pCompoundTag;
         }
     }
 
-    private static AccumulativeData get(Level level){
+    private static AccumulativeData get(Level level) {
         if (!(level instanceof ServerLevel)) {
             throw new RuntimeException("Attempted to get the data from a client world.");
         }
 
         ServerLevel serverWorld = level.getServer().overworld();
         DimensionDataStorage dimensionSavedDataManager = serverWorld.getDataStorage();
-        return dimensionSavedDataManager.computeIfAbsent(AccumulativeData::load,AccumulativeData::new, "accumulative_data");
+        return dimensionSavedDataManager.computeIfAbsent(AccumulativeData::load, AccumulativeData::new, "accumulative_data");
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
@@ -108,18 +108,19 @@ public class AccumulativeTrigger extends SimpleCriterionTrigger<AccumulativeTrig
             this.requirement = requirement;
         }
 
-        public boolean matches(ResourceLocation resourceLocation,Player player,int change) {
+        public boolean matches(ResourceLocation resourceLocation, Player player, int change) {
             AccumulativeData data = get(player.level);
-            data.change(resourceLocation,player.getUUID(),change);
-            return requirement.matches(data.get(resourceLocation,player.getUUID()));
+            data.change(resourceLocation, player.getUUID(), change);
+            return requirement.matches(data.get(resourceLocation, player.getUUID()));
         }
 
         @Override
         @NotNull
         public JsonObject serializeToJson(@NotNull SerializationContext pConditions) {
-            JsonObject jsonobject = super.serializeToJson(pConditions);
-            jsonobject.add("requirement", requirement.serializeToJson());
-            return jsonobject;
+            JsonObject jsonObject = super.serializeToJson(pConditions);
+            jsonObject.add("requirement", requirement.serializeToJson());
+            return jsonObject;
         }
     }
+    
 }

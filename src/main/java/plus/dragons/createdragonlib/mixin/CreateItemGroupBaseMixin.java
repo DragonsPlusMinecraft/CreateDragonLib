@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import plus.dragons.createdragonlib.api.event.FillCreateItemGroupEvent;
+import plus.dragons.createdragonlib.init.FillCreateItemGroupEvent;
 
 @Mixin(CreateItemGroupBase.class)
 public class CreateItemGroupBaseMixin {

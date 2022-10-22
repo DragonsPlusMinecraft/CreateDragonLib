@@ -1,4 +1,4 @@
-package plus.dragons.createdragonlib.advancement;
+package plus.dragons.createdragonlib.advancement.critereon;
 
 import com.google.common.collect.Maps;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -16,9 +16,9 @@ import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-abstract class CriterionTriggerBase<T extends CriterionTriggerBase.Instance> implements CriterionTrigger<T> {
+public abstract class AbstractTrigger<T extends AbstractTrigger.Instance> implements CriterionTrigger<T> {
 
-    public CriterionTriggerBase(ResourceLocation id) {
+    public AbstractTrigger(ResourceLocation id) {
         this.id = id;
     }
 
@@ -76,6 +76,7 @@ abstract class CriterionTriggerBase<T extends CriterionTriggerBase.Instance> imp
         }
 
         protected abstract boolean test(@Nullable List<Supplier<Object>> suppliers);
+        
     }
 
 }

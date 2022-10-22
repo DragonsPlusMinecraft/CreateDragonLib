@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.advancement.CreateAdvancement;
 import com.simibubi.create.foundation.utility.Components;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.FrameType;
@@ -14,16 +15,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
+import plus.dragons.createdragonlib.advancement.critereon.SimpleTrigger;
+import plus.dragons.createdragonlib.advancement.critereon.TriggerFactory;
 import plus.dragons.createdragonlib.mixin.CreateAdvancementConstructor;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Advancement {
+public class AdvancementHolder {
 
-    public static final Map<String, List<Advancement>> ENTRIES_MAP = new HashMap<>();
+    public static final Map<String, List<AdvancementHolder>> ENTRIES_MAP = new HashMap<>();
     protected final ResourceLocation id;
-    protected final net.minecraft.advancements.Advancement.Builder builder;
+    protected final Advancement.Builder builder;
     @Nullable
     protected final SimpleTrigger builtinTrigger;
     protected final String titleKey;
@@ -31,23 +34,24 @@ public class Advancement {
     protected final String title;
     protected final String description;
     @Nullable
-    protected final Advancement parent;
+    protected final AdvancementHolder parent;
     @Nullable
     protected final CreateAdvancement createAdvancement;
-    protected net.minecraft.advancements.Advancement advancement;
+    protected Advancement advancement;
     
-    protected Advancement(String namespace, String id, net.minecraft.advancements.Advancement.Builder builder, @Nullable Advancement parent, boolean builtin, String title, String description, TriggerFactory factory) {
-        this.id = new ResourceLocation(namespace,id);
+    protected AdvancementHolder(String modid, String id, Advancement.Builder builder, @Nullable AdvancementHolder parent, boolean builtin, String title, String description, TriggerFactory triggerFactory) {
+        this.id = new ResourceLocation(modid,id);
         this.builder = builder;
         this.parent = parent;
         if(builtin) {
-            this.builtinTrigger = factory.addSimple(new ResourceLocation(namespace,"builtin/" + id));
+            this.builtinTrigger = triggerFactory.simple(new ResourceLocation(modid, "builtin/" + id));
             this.builder.addCriterion("builtin", builtinTrigger.instance());
         } else this.builtinTrigger = null;
         this.createAdvancement = CreateAdvancementConstructor.createInstance(id, $ -> $);
-        ((ModdedCreateAdvancement) createAdvancement).fromModAdvancement(this);
-        this.titleKey = new StringJoiner(".").add("advancement").add(namespace).add(id).toString();
-        this.descriptionKey = titleKey + ".desc";this.title = title;
+        ((CreateAdvancementAccess) createAdvancement).fromAdvancementHolder(this);
+        this.titleKey = new StringJoiner(".").add("advancement").add(modid).add(id).toString();
+        this.descriptionKey = titleKey + ".desc";
+        this.title = title;
         this.description = description;
     }
     
@@ -85,7 +89,7 @@ public class Advancement {
     public boolean isAlreadyAwardedTo(Player player) {
         if (!(player instanceof ServerPlayer sp))
             return true;
-        net.minecraft.advancements.Advancement advancement = sp.getServer().getAdvancements().getAdvancement(id);
+        Advancement advancement = sp.getServer().getAdvancements().getAdvancement(id);
         if (advancement == null)
             return true;
         return sp.getAdvancements().getOrStartProgress(advancement).isDone();
@@ -99,7 +103,7 @@ public class Advancement {
         builtinTrigger.trigger(sp);
     }
     
-    public void save(Consumer<net.minecraft.advancements.Advancement> consumer) {
+    public void save(Consumer<Advancement> consumer) {
         if (parent != null) builder.parent(parent.advancement);
         advancement = builder.save(consumer, id.toString());
     }
@@ -109,9 +113,9 @@ public class Advancement {
         object.addProperty(descriptionKey(), description());
     }
 
-    public static JsonObject provideLangEntries(String namespace) {
+    public static JsonObject provideLangEntries(String modid) {
         JsonObject object = new JsonObject();
-        var advancements = ENTRIES_MAP.get(namespace);
+        var advancements = ENTRIES_MAP.get(modid);
         if(advancements==null) return object;
         for (var advancement : advancements) {
             advancement.appendToLang(object);
@@ -120,13 +124,13 @@ public class Advancement {
     }
 
     public static class Builder {
-        private final String namespace;
+        private final String modid;
         @Nullable
         private final ResourceLocation background;
         private final String id;
-        private final net.minecraft.advancements.Advancement.Builder builder = net.minecraft.advancements.Advancement.Builder.advancement();
+        private final Advancement.Builder builder = Advancement.Builder.advancement();
         @Nullable
-        private Advancement parent;
+        private AdvancementHolder parent;
         private boolean builtin = true;
         private String title = "Untitled";
         private String description = "No Description";
@@ -135,12 +139,12 @@ public class Advancement {
         private boolean toast = true;
         private boolean announce = false;
         private boolean hide = false;
-        private TriggerFactory factory;
+        private final TriggerFactory factory;
 
-        public Builder(String namespace,String id, TriggerFactory factory) {
-            this.namespace = namespace;
+        public Builder(String modid,String id, TriggerFactory factory) {
+            this.modid = modid;
             this.id = id;
-            this.background = "root".equals(id) ? new ResourceLocation(namespace,"textures/gui/advancements.png") : null;
+            this.background = "root".equals(id) ? new ResourceLocation(modid,"textures/gui/advancements.png") : null;
             this.factory = factory;
         }
     
@@ -194,23 +198,24 @@ public class Advancement {
         }
 
         public Builder parent(ResourceLocation id) {
-            builder.parent(new net.minecraft.advancements.Advancement(id, null, null, AdvancementRewards.EMPTY, Map.of(), new String[0][0]));
+            builder.parent(new Advancement(id, null, null, AdvancementRewards.EMPTY, Map.of(), new String[0][0]));
             return this;
         }
 
-        public Builder parent(Advancement advancement) {
+        public Builder parent(AdvancementHolder advancement) {
             this.parent = advancement;
             return this;
         }
 
-        public Builder transform(NonNullUnaryOperator<net.minecraft.advancements.Advancement.Builder> transform) {
+        public Builder transform(NonNullUnaryOperator<Advancement.Builder> transform) {
             transform.apply(builder);
             return this;
         }
 
-        public Advancement build() {
-            if (hide) description += "\u00A77\n(Hidden Advancement)";
-            Advancement advancement = new Advancement(namespace,id, builder, parent, builtin, title, description, factory);
+        public AdvancementHolder build() {
+            if (hide)
+                description += "\u00A77\n(Hidden Advancement)";
+            AdvancementHolder advancement = new AdvancementHolder(modid,id, builder, parent, builtin, title, description, factory);
             builder.display(
                 icon,
                 Components.translatable(advancement.titleKey),
@@ -221,8 +226,7 @@ public class Advancement {
                 announce,
                 hide
             );
-            if(!ENTRIES_MAP.containsKey(namespace)) ENTRIES_MAP.put(namespace,new ArrayList<>());
-            ENTRIES_MAP.get(namespace).add(advancement);
+            ENTRIES_MAP.computeIfAbsent(modid, $ -> new ArrayList<>()).add(advancement);
             return advancement;
         }
         

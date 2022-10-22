@@ -10,21 +10,48 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/*
+MIT License
+
+Copyright (c) 2019 simibubi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/**
+ * Non-enum version of {@link com.simibubi.create.foundation.gui.AllGuiTextures}
+ */
 public class GuiTexture implements ScreenElement {
     public final ResourceLocation location;
     public final int width, height;
     public final int startX, startY;
 
-    public GuiTexture(String namespace, String location, int startX, int startY, int width, int height) {
-        this.location = new ResourceLocation(namespace, "textures/gui/" + location + ".png");
+    public GuiTexture(String modid, String location, int startX, int startY, int width, int height) {
+        this.location = new ResourceLocation(modid, "textures/gui/" + location + ".png");
         this.width = width;
         this.height = height;
         this.startX = startX;
         this.startY = startY;
     }
 
-    public GuiTexture(String namespace, String location, int width, int height) {
-        this(namespace, location, 0, 0, width, height);
+    public GuiTexture(String modid, String location, int width, int height) {
+        this(modid, location, 0, 0, width, height);
     }
     
     @OnlyIn(Dist.CLIENT)

@@ -2,6 +2,7 @@ package plus.dragons.createdragonlib.mixin;
 
 import com.simibubi.create.foundation.advancement.CreateAdvancement;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -10,16 +11,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import plus.dragons.createdragonlib.advancement.Advancement;
-import plus.dragons.createdragonlib.advancement.ModdedCreateAdvancement;
+import plus.dragons.createdragonlib.advancement.AdvancementHolder;
+import plus.dragons.createdragonlib.advancement.CreateAdvancementAccess;
 
 @Mixin(value = CreateAdvancement.class, remap = false)
-@Implements(@Interface(iface = ModdedCreateAdvancement.class, prefix = "createDragonLib$", remap = Interface.Remap.NONE))
+@Implements(@Interface(iface = CreateAdvancementAccess.class, prefix = "createDragonLib$", remap = Interface.Remap.NONE))
 public class CreateAdvancementMixin {
     
-    @Nullable private Advancement createDragonLib$advancement = null;
+    @Nullable private AdvancementHolder createDragonLib$advancement = null;
     
-    public void createDragonLib$fromModAdvancement(Advancement advancement) {
+    public void createDragonLib$fromAdvancementHolder(@NotNull AdvancementHolder advancement) {
         this.createDragonLib$advancement = advancement;
     }
     

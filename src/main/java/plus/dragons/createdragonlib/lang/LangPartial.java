@@ -1,65 +1,62 @@
 package plus.dragons.createdragonlib.lang;
 
-import com.google.common.base.Supplier;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.utility.FilesHelper;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.function.Supplier;
 
 abstract class LangPartial {
-    protected final String namespace;
+    protected final String modid;
     protected final String display;
-    protected final Supplier<JsonElement> provider;
 
-    LangPartial(String namespace, String display, Supplier<JsonElement> provider) {
-        this.namespace = namespace;
+    LangPartial(String modid, String display) {
+        this.modid = modid;
         this.display = display;
-        this.provider = provider;
     }
 
     public String getDisplay() {
         return display;
     }
 
-    public JsonElement provide() {
-        return provider.get();
-    }
+    public abstract JsonObject provide();
 
-    public static class Merge extends LangPartial {
+    static class Merge extends LangPartial {
         private final String filename;
 
-        Merge(String namespace, String filename, String display) {
-            super(namespace,display, createBox(namespace,filename));
+        Merge(String modid, String display, String filename) {
+            super(modid, display);
             this.filename = filename;
         }
-
-        static Supplier<JsonElement> createBox(String namespace,String filename){
-            var temp = new Box(namespace,filename);
-            return temp::fromResource;
+    
+        @Override
+        public JsonObject provide() {
+            String filepath = "assets/" + modid + "/lang/default/" + filename + ".json";
+            JsonElement element = FilesHelper.loadJsonResource(filepath);
+            if (element == null)
+                throw new IllegalStateException(String.format("Could not find default lang file: %s", filepath));
+            return element.getAsJsonObject();
         }
-
-        record Box(String namespace,String filename){
-            private JsonElement fromResource() {
-                String filepath = "assets/" + namespace + "/lang/default/" + filename + ".json";
-                JsonElement element = FilesHelper.loadJsonResource(filepath);
-                if (element == null)
-                    throw new IllegalStateException(String.format("Could not find default lang file: %s", filepath));
-                return element;
-            }
-        }
+        
     }
 
-    public static class Gen extends LangPartial {
-
+    static class Gen extends LangPartial {
+        private final Supplier<JsonObject> provider;
         private final Runnable preTask;
 
-        Gen(String namespace, String display, Supplier<JsonElement> customProvider, Runnable preTask) {
-            super(namespace,display,customProvider);
+        Gen(String modid, String display, Supplier<JsonObject> provider, Runnable preTask) {
+            super(modid, display);
+            this.provider = provider;
             this.preTask = preTask;
         }
 
         @Override
-        public JsonElement provide() {
+        public JsonObject provide() {
             preTask.run();
-            return super.provide();
+            return provider.get();
         }
+        
     }
+    
 }

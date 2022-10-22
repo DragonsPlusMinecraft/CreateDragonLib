@@ -18,6 +18,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 
 /*
 MIT License
@@ -51,80 +51,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * A useful {@link DataProvider} which can merge handwritten localization files and generated ones into one. <br>
+ * Originated from {@link com.simibubi.create.foundation.data.LangMerger} <br>
+ */
+@SuppressWarnings("UnstableApiUsage")
+@ApiStatus.Internal
 class LangMerger implements DataProvider {
-	private Logger logger = LogManager.getLogger();
-	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting()
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Gson GSON = new GsonBuilder()
+		.setPrettyPrinting()
 		.disableHtmlEscaping()
 		.create();
-	static final String CATEGORY_HEADER = "\t\"_\": \"->------------------------]  %s  [------------------------<-\",";
+	private static final String CATEGORY_HEADER = "\t\"_\": \"->------------------------]  %s  [------------------------<-\",";
+	private final String modid;
+	private final String name;
+	
+	private final List<Object> mergedLangData = new ArrayList<>();
+	private final Map<String, List<Object>> populatedLangData = new HashMap<>();
+	private final Map<String, Map<String, String>> allLocalizedEntries = new HashMap<>();
+	private final Map<String, MutableInt> missingTranslationTally = new HashMap<>();
+	
+	final List<LangPartial> partials = new ArrayList<>();
+	DataGenerator dataGenerator;
+	List<String> ignore = new ArrayList<>();
 
-	private DataGenerator gen;
-
-	private List<Object> mergedLangData;
-	private Map<String, List<Object>> populatedLangData;
-	private Map<String, Map<String, String>> allLocalizedEntries;
-	private Map<String, MutableInt> missingTranslationTally;
-
-	private List<String> langIgnore;
-
-	private String namespace;
-
-	private String modName;
-
-	private List<Supplier<LangPartial>> langPartials;
-
-	public LangMerger(String modName, String namespace) {
-		this.mergedLangData = new ArrayList<>();
-		this.langIgnore = new ArrayList<>();
-		this.allLocalizedEntries = new HashMap<>();
-		this.populatedLangData = new HashMap<>();
-		this.missingTranslationTally = new HashMap<>();
-		this.langPartials = new ArrayList<>();
-		this.namespace = namespace;
-		this.modName = modName;
-	}
-
-	public void addGenerator(DataGenerator gen){
-		this.gen = gen;
-	}
-
-	public void addPartial(Supplier<LangPartial> modLangPartialSupplier){
-		langPartials.add(modLangPartialSupplier);
-	}
-
-	private void populateLangIgnore() {
-		// Key prefixes added here will NOT be transferred to lang templates
-	}
-
-	private boolean shouldIgnore(String key) {
-		for (String string : langIgnore)
-			if (key.startsWith(string))
-				return true;
-		return false;
+	LangMerger(String name, String modid) {
+		this.modid = modid;
+		this.name = name;
 	}
 
 	@Override
 	public String getName() {
-		return "Create Dragon Lib Lang Merger";
+		return name + " Lang Merger";
 	}
 
 	@Override
 	public void run(CachedOutput cache) throws IOException {
-		Path path = this.gen.getOutputFolder()
-			.resolve("assets/" + namespace + "/lang/" + "en_us.json");
-
-		for (Pair<String, JsonElement> pair : getAllLocalizationFiles()) {
-			if (!pair.getRight()
-				.isJsonObject())
+		Path path = this.dataGenerator.getOutputFolder()
+			.resolve("assets/" + modid + "/lang/" + "en_us.json");
+		
+		for(Pair<String, JsonElement> pair : getAllLocalizationFiles()) {
+			if(!pair.getRight().isJsonObject())
 				continue;
 			Map<String, String> localizedEntries = new HashMap<>();
-			JsonObject jsonobject = pair.getRight()
-				.getAsJsonObject();
-			jsonobject.entrySet()
+			JsonObject jsonObject = pair.getRight().getAsJsonObject();
+			jsonObject.entrySet()
 				.stream()
 				.forEachOrdered(entry -> {
 					String key = entry.getKey();
-					if (key.startsWith("_"))
+					if(key.startsWith("_"))
 						return;
 					String value = entry.getValue()
 						.getAsString();
@@ -135,25 +111,32 @@ class LangMerger implements DataProvider {
 			populatedLangData.put(key, new ArrayList<>());
 			missingTranslationTally.put(key, new MutableInt(0));
 		}
-
+		
 		collectExistingEntries(path);
 		collectEntries();
-		if (mergedLangData.isEmpty())
+		if(mergedLangData.isEmpty())
 			return;
-
+		
 		save(cache, mergedLangData, -1, path, "Merging en_us.json with hand-written lang entries...");
-		for (Entry<String, List<Object>> localization : populatedLangData.entrySet()) {
+		for(Entry<String, List<Object>> localization : populatedLangData.entrySet()) {
 			String key = localization.getKey();
-			Path populatedLangPath = this.gen.getOutputFolder()
-				.resolve("assets/" + namespace + "/lang/unfinished/" + key);
+			Path populatedLangPath = this.dataGenerator.getOutputFolder()
+				.resolve("assets/" + modid + "/lang/unfinished/" + key);
 			save(cache, localization.getValue(), missingTranslationTally.get(key)
 				.intValue(), populatedLangPath, "Populating " + key + " with missing entries...");
 		}
 	}
+	
+	private boolean shouldIgnore(String key) {
+		for (String string : ignore)
+			if (key.startsWith(string))
+				return true;
+		return false;
+	}
 
 	private void collectExistingEntries(Path path) throws IOException {
 		if (!Files.exists(path)) {
-			logger.warn("Nothing to merge! It appears no lang was generated before me.");
+			LOGGER.warn("Nothing to merge! It appears no lang was generated before me.");
 			return;
 		}
 
@@ -181,13 +164,10 @@ class LangMerger implements DataProvider {
 			keysToRemove.forEach(jsonobject::remove);
 
 			addAll("Game Elements", jsonobject);
-			reader.close();
 		}
 	}
 
-	protected void addAll(String header, JsonObject jsonobject) {
-		if (jsonobject == null)
-			return;
+	private void addAll(String header, JsonObject jsonObject) {
 		header = String.format(CATEGORY_HEADER, header);
 
 		writeData("\n");
@@ -195,7 +175,7 @@ class LangMerger implements DataProvider {
 		writeData("\n\n");
 
 		MutableObject<String> previousKey = new MutableObject<>("");
-		jsonobject.entrySet()
+		jsonObject.entrySet()
 			.stream()
 			.forEachOrdered(entry -> {
 				String key = entry.getKey();
@@ -234,7 +214,7 @@ class LangMerger implements DataProvider {
 		// Always put tooltips and ponder scenes in their own paragraphs
 		if (key.endsWith(".tooltip"))
 			return true;
-		if (key.startsWith(namespace + ".ponder") && key.endsWith(PonderScene.TITLE_KEY))
+		if (key.startsWith(modid + ".ponder") && key.endsWith(PonderScene.TITLE_KEY))
 			return true;
 
 		key = key.replaceFirst("\\.", "");
@@ -252,7 +232,7 @@ class LangMerger implements DataProvider {
 	private List<Pair<String, JsonElement>> getAllLocalizationFiles() {
 		ArrayList<Pair<String, JsonElement>> list = new ArrayList<>();
 
-		String filepath = "assets/" + namespace + "/lang/";
+		String filepath = "assets/" + modid + "/lang/";
 		try (InputStream resourceStream = ClassLoader.getSystemResourceAsStream(filepath)) {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceStream));
 			while (true) {
@@ -273,17 +253,15 @@ class LangMerger implements DataProvider {
 	}
 
 	private void collectEntries() {
-		for (Supplier<LangPartial> supplier : langPartials){
-			var langPartial = supplier.get();
-			addAll(langPartial.getDisplay(), langPartial.provide()
-					.getAsJsonObject());
+		for (LangPartial partial : partials){
+			addAll(partial.getDisplay(), partial.provide().getAsJsonObject());
 		}
-
 	}
 
+	@SuppressWarnings("deprecation")
 	private void save(CachedOutput cache, List<Object> dataIn, int missingKeys, Path target, String message)
 			throws IOException {
-		logger.info(message);
+		LOGGER.info(message);
 
 		ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
 		HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
@@ -295,22 +273,22 @@ class LangMerger implements DataProvider {
 		cache.writeIfNeeded(target, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
 	}
 
-	protected String createString(List<Object> data, int missingKeys) {
+	private String createString(List<Object> data, int missingKeys) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{\n");
 		if (missingKeys != -1)
-			builder.append("\t\"_\": \"Missing Localizations: " + missingKeys + "\",\n");
+			builder.append("\t\"_\": \"Missing Localizations: ").append(missingKeys).append("\",\n");
 		data.forEach(builder::append);
-		builder.append("\t\"_\": \"Thank you for translating " + modName + "!\"\n\n");
+		builder.append("\t\"_\": \"Thank you for translating ").append(name).append("!\"\n\n");
 		builder.append("}");
 		return builder.toString();
 	}
 
-	private class LangEntry {
+	private static class LangEntry {
 		static final String ENTRY_FORMAT = "\t\"%s\": %s,\n";
 
-		private String key;
-		private String value;
+		private final String key;
+		private final String value;
 
 		LangEntry(String key, String value) {
 			this.key = key;
@@ -324,9 +302,9 @@ class LangMerger implements DataProvider {
 
 	}
 
-	private class ForeignLangEntry extends LangEntry {
+	private static class ForeignLangEntry extends LangEntry {
 
-		private boolean missing;
+		private final boolean missing;
 
 		ForeignLangEntry(String key, String value, Map<String, String> localizationMap) {
 			super(key, localizationMap.getOrDefault(key, "UNLOCALIZED: " + value));

@@ -1,21 +1,17 @@
-package plus.dragons.createdragonlib.advancement;
+package plus.dragons.createdragonlib.advancement.critereon;
 
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.advancement.ITriggerable;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.function.Supplier;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class SimpleTrigger extends CriterionTriggerBase<SimpleTrigger.Instance> implements ITriggerable {
+public class SimpleTrigger extends AbstractTrigger<SimpleTrigger.Instance> implements ITriggerable {
 
     public SimpleTrigger(ResourceLocation id) {
         super(id);
@@ -34,14 +30,17 @@ public class SimpleTrigger extends CriterionTriggerBase<SimpleTrigger.Instance> 
         return new Instance(getId());
     }
 
-    public static class Instance extends CriterionTriggerBase.Instance {
+    public static class Instance extends AbstractTrigger.Instance {
 
         public Instance(ResourceLocation idIn) {
             super(idIn, EntityPredicate.Composite.ANY);
         }
+        
         @Override
         protected boolean test(@Nullable List<Supplier<Object>> suppliers) {
             return true;
         }
+        
     }
+    
 }
