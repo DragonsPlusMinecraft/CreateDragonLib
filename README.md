@@ -30,7 +30,7 @@ And we allows you to merge any existing lang file into lang datagen:
 In constructor of entrance class of your mod:
 
 ```java
-    public ExampleMod() {
+    public class ExampleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         doneRegisterWork();
