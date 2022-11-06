@@ -8,14 +8,21 @@ public class AdvancementFactory {
     private final String modid;
     private final AdvancementGen advancementGen;
     private final TriggerFactory triggerFactory = new TriggerFactory();
+    private final Runnable preTask;
 
-    private AdvancementFactory(String name, String modid) {
+    private AdvancementFactory(String name, String modid, Runnable preTask) {
         this.modid = modid;
         this.advancementGen = new AdvancementGen(name, modid);
+        this.preTask = preTask;
     }
     
+    @Deprecated(since = "1.1.1", forRemoval = true)
     public static AdvancementFactory create(String name, String modid) {
-        return new AdvancementFactory(name, modid);
+        return new AdvancementFactory(name, modid, () -> {});
+    }
+    
+    public static AdvancementFactory create(String name, String modid, Runnable preTask) {
+        return new AdvancementFactory(name, modid, preTask);
     }
 
     public AdvancementHolder.Builder builder(String id) {
@@ -27,6 +34,7 @@ public class AdvancementFactory {
     }
     
     public void datagen(final GatherDataEvent event) {
+        preTask.run();
         DataGenerator datagen = event.getGenerator();
         advancementGen.generator = datagen;
         datagen.addProvider(event.includeServer(), advancementGen);
