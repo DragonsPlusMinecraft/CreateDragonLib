@@ -3,7 +3,6 @@ package plus.dragons.createdragonlib.lang;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.utility.FilesHelper;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
