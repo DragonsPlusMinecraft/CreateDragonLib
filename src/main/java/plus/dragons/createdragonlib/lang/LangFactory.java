@@ -45,7 +45,7 @@ public class LangFactory {
     }
     
     /**
-     * Merge a file from {@code assets/modid/lang/partial/} folder to merge into the {@link LangMerger}.
+     * Merge a file from {@code assets/modid/lang/default/} folder to merge into the {@link LangMerger}.
      * @param filename the filename, without extension (as it should always be ".json")
      * @param display the display header for the category
      * @return self
@@ -94,7 +94,7 @@ public class LangFactory {
     }
     
     /**
-     * Merge {@code assets/modid/lang/partial/tooltips.json} into the {@link LangMerger}. <br>
+     * Merge {@code assets/modid/lang/default/tooltips.json} into the {@link LangMerger}. <br>
      * See Create's tooltips.json for how to create your Create-styled tooltip localization.
      * @return self
      */
@@ -104,7 +104,7 @@ public class LangFactory {
     }
     
     /**
-     * Merge {@code assets/modid/lang/partial/interface.json} into the {@link LangMerger}.
+     * Merge {@code assets/modid/lang/default/interface.json} into the {@link LangMerger}.
      * @return self
      */
     public LangFactory ui() {
