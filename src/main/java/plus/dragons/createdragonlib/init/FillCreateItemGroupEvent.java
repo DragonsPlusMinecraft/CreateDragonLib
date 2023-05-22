@@ -1,6 +1,6 @@
 package plus.dragons.createdragonlib.init;
 
-import com.simibubi.create.foundation.item.CreateItemGroupBase;
+import com.simibubi.create.infrastructure.item.BaseCreativeModeTab;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,11 +14,11 @@ import java.util.*;
  * Event to add items to Create's creative mode tab.
  */
 public class FillCreateItemGroupEvent extends Event {
-    private final CreateItemGroupBase itemGroup;
+    private final BaseCreativeModeTab itemGroup;
     private final NonNullList<ItemStack> items;
     private final Map<Item, List<ItemStack>> insertions = new IdentityHashMap<>();
     
-    public FillCreateItemGroupEvent(CreateItemGroupBase itemGroup, NonNullList<ItemStack> items) {
+    public FillCreateItemGroupEvent(BaseCreativeModeTab itemGroup, NonNullList<ItemStack> items) {
         this.itemGroup = itemGroup;
         this.items = items;
     }
@@ -27,7 +27,7 @@ public class FillCreateItemGroupEvent extends Event {
      * Get the creative mod tab, so you could determine which tab are you adding into.
      * @return the creative mod tab
      */
-    public CreateItemGroupBase getItemGroup() {
+    public BaseCreativeModeTab getItemGroup() {
         return itemGroup;
     }
     
