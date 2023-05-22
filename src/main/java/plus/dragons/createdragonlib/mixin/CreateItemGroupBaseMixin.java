@@ -1,6 +1,5 @@
 package plus.dragons.createdragonlib.mixin;
 
-import com.simibubi.create.infrastructure.item.BaseCreativeModeTab;
 import com.simibubi.create.infrastructure.item.CreateCreativeModeTab;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +15,7 @@ public class CreateItemGroupBaseMixin {
     
     @Inject(method = "fillItemList", at = @At("TAIL"))
     private void postFillCreateItemGroupEvent(NonNullList<ItemStack> items, CallbackInfo ci) {
-        var event = new FillCreateItemGroupEvent((BaseCreativeModeTab) (Object) this, items);
+        var event = new FillCreateItemGroupEvent((CreateCreativeModeTab) (Object) this, items);
         MinecraftForge.EVENT_BUS.post(event);
         event.apply();
     }
