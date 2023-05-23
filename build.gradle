@@ -127,11 +127,11 @@ repositories {
         name = 'tterrag maven'
         url = 'https://maven.tterrag.com/'
     }
-    maven {
-        // Location of the maven that hosts JEI files (and TiC)
-        name 'Progwml6 maven'
-        url 'https://dvs1.progwml6.com/files/maven'
-    }
+//    maven {
+//        // Location of the maven that hosts JEI files (and TiC)
+//        name 'Progwml6 maven'
+//        url 'https://dvs1.progwml6.com/files/maven'
+//    }
     maven {
         // Location of the maven for vazkii's mods
         name 'blamejared'

@@ -1,6 +1,6 @@
 package plus.dragons.createdragonlib.mixin;
 
-import com.simibubi.create.content.contraptions.fluids.FluidReactions;
+import com.simibubi.create.content.fluids.FluidReactions;
 import com.simibubi.create.foundation.advancement.AdvancementBehaviour;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.utility.BlockHelper;
