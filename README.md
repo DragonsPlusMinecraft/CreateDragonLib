@@ -3,7 +3,7 @@
 repositories {
     maven {
         // Maven of dragons.plus
-        url "https://maven.dragons.plus/Releases"
+        url "https://maven.dragons.plus/releases"
     }
 }
 
