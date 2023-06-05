@@ -71,6 +71,7 @@ class LangMerger implements DataProvider {
 	private final Map<String, List<Object>> populatedLangData = new HashMap<>();
 	private final Map<String, Map<String, String>> allLocalizedEntries = new HashMap<>();
 	private final Map<String, MutableInt> missingTranslationTally = new HashMap<>();
+	private final Map<String, MutableInt> existingButActuallyMissingTranslationTally = new HashMap<>();
 	
 	final List<LangPartial> partials = new ArrayList<>();
 	DataGenerator dataGenerator;
@@ -92,10 +93,12 @@ class LangMerger implements DataProvider {
 			.resolve("assets/" + modid + "/lang/" + "en_us.json");
 		
 		for(Pair<String, JsonElement> pair : getAllLocalizationFiles()) {
+			String langType = pair.getKey();
 			if(!pair.getRight().isJsonObject())
 				continue;
 			Map<String, String> localizedEntries = new HashMap<>();
 			JsonObject jsonObject = pair.getRight().getAsJsonObject();
+			existingButActuallyMissingTranslationTally.put(langType, new MutableInt(0));
 			jsonObject.entrySet()
 				.stream()
 				.forEachOrdered(entry -> {
@@ -104,12 +107,13 @@ class LangMerger implements DataProvider {
 						return;
 					String value = entry.getValue()
 						.getAsString();
+					if(value.startsWith("UNLOCALIZED: "))
+						existingButActuallyMissingTranslationTally.get(langType).increment();
 					localizedEntries.put(key, value);
 				});
-			String key = pair.getKey();
-			allLocalizedEntries.put(key, localizedEntries);
-			populatedLangData.put(key, new ArrayList<>());
-			missingTranslationTally.put(key, new MutableInt(0));
+			allLocalizedEntries.put(langType, localizedEntries);
+			populatedLangData.put(langType, new ArrayList<>());
+			missingTranslationTally.put(langType, new MutableInt(0));
 		}
 		
 		collectExistingEntries(path);
@@ -122,8 +126,9 @@ class LangMerger implements DataProvider {
 			String key = localization.getKey();
 			Path populatedLangPath = this.dataGenerator.getOutputFolder()
 				.resolve("assets/" + modid + "/lang/unfinished/" + key);
-			save(cache, localization.getValue(), missingTranslationTally.get(key)
-				.intValue(), populatedLangPath, "Populating " + key + " with missing entries...");
+			save(cache, localization.getValue(),
+					missingTranslationTally.get(key).intValue() + existingButActuallyMissingTranslationTally.get(key).intValue(),
+					populatedLangPath, "Populating " + key + " with missing entries...");
 		}
 	}
 	
