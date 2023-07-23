@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.widget.Label;
 import com.simibubi.create.foundation.utility.Components;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.NotNull;
@@ -102,19 +103,16 @@ public class ComponentLabel extends Label {
             ? newText
             : computeTrimmedText(newText, trimFront, maxWidthPx);
     }
-    
+
     @Override
-    public void renderButton(@NotNull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void renderButton(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if (text == null)
             return;
         RenderSystem.setShaderColor(1, 1, 1, 1);
         var textToRender = suffix == null
-            ? text
-            : text.copy().append(suffix);
-        if (hasShadow)
-            font.drawShadow(matrixStack, textToRender, x, y, color);
-        else
-            font.draw(matrixStack, textToRender, x, y, color);
+                ? text
+                : text.copy().append(suffix);
+        graphics.drawString(font,textToRender,getX(),getY(),color,hasShadow);
     }
     
 }
