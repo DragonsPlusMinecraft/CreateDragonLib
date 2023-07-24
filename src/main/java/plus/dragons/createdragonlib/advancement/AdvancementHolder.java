@@ -198,7 +198,7 @@ public class AdvancementHolder {
         }
 
         public Builder parent(ResourceLocation id) {
-            builder.parent(new Advancement(id, null, null, AdvancementRewards.EMPTY, Map.of(), new String[0][0]));
+            builder.parent(new Advancement(id, null, null, AdvancementRewards.EMPTY, Map.of(), new String[0][0],true));
             return this;
         }
 

@@ -2,6 +2,7 @@ package plus.dragons.createdragonlib.advancement.critereon;
 
 import com.google.gson.JsonObject;
 import com.simibubi.create.foundation.advancement.ITriggerable;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +34,7 @@ public class SimpleTrigger extends AbstractTrigger<SimpleTrigger.Instance> imple
     public static class Instance extends AbstractTrigger.Instance {
 
         public Instance(ResourceLocation idIn) {
-            super(idIn, EntityPredicate.Composite.ANY);
+            super(idIn, ContextAwarePredicate.ANY);
         }
         
         @Override

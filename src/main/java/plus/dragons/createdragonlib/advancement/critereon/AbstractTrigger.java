@@ -3,6 +3,7 @@ package plus.dragons.createdragonlib.advancement.critereon;
 import com.google.common.collect.Maps;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
@@ -67,8 +68,8 @@ public abstract class AbstractTrigger<T extends AbstractTrigger.Instance> implem
 
     public abstract static class Instance extends AbstractCriterionTriggerInstance {
 
-        public Instance(ResourceLocation idIn, EntityPredicate.Composite p_i231464_2_) {
-            super(idIn, p_i231464_2_);
+        public Instance(ResourceLocation idIn, ContextAwarePredicate player) {
+            super(idIn, player);
         }
 
         protected abstract boolean test(@Nullable List<Supplier<Object>> suppliers);
