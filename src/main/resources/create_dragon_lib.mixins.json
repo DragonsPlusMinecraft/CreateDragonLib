@@ -8,6 +8,7 @@
     "AdvancementBehaviourAccessor",
     "CreateAdvancementConstructor",
     "CreateAdvancementMixin",
+    "CreateItemGroupBaseMixin",
     "FluidReactionsMixin"
   ],
   "client": [],
