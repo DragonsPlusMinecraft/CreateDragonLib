@@ -29,8 +29,8 @@ public abstract class CreateItemGroupBaseMixin implements CreativeModeTab.Displa
 
     @Redirect(method = "accept",
             at = @At(value = "INVOKE",
-                    target = "Lcom/simibubi/create/AllCreativeModeTabs$RegistrateDisplayItemsGenerator;outputAll(Lnet/minecraft/world/item/CreativeModeTab$Output;Ljava/util/List;Ljava/util/function/Function;Ljava/util/function/Function;)V"),
-            remap = false)
+                    target = "Lcom/simibubi/create/AllCreativeModeTabs$RegistrateDisplayItemsGenerator;outputAll(Lnet/minecraft/world/item/CreativeModeTab$Output;Ljava/util/List;Ljava/util/function/Function;Ljava/util/function/Function;)V",
+                    remap = false))
     private void injectOutput(CreativeModeTab.Output item, List<Item> output, Function<Item, ItemStack> items, Function<Item, CreativeModeTab.TabVisibility> stackFunc) {
         var event = new FillCreateItemGroupEvent(mainTab, output);
         MinecraftForge.EVENT_BUS.post(event);
