@@ -61,6 +61,7 @@ public class LangFactory {
      *                   in most cases you should force bootstrap your ponders here.
      * @return self
      */
+    // FIXME :: record() is deprecated and will be removed
     public LangFactory ponders(Runnable preTask) {
         langMerger.partials.add(new LangPartial.Gen(
             modid,
