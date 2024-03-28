@@ -68,7 +68,7 @@ public class LangFactory {
             () -> {
                 var ret = new JsonObject();
                 PonderLocalization.generateSceneLang();
-                PonderLocalization.record(modid, ret);
+                PonderLocalization.record(modid, ret); //TODO need change
                 return ret;
             },
             preTask)
